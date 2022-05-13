@@ -1,13 +1,16 @@
-- uses: mdallasanta/ssh-scp-deploy@1.2
-  with:
-    local: './'                                                  # Local file path - REQUIRED false - DEFAULT ./
-    remote: '~/'                                                 # Remote file path - REQUIRED false - DEFAULT ~/
-    host: ${{secrets.HOST}}                                      # Remote server address - REQUIRED true
-    port: ${{secrets.PORT}}                                      # Remote server port - REQUIRED false - DEFAULT 22
-    user: ${{secrets.USER}}                                      # Remote server user - REQUIRED true
-    password: ${{secrets.PASSWORD}}                              # User password - REQUIRED at least one of "password" or "key" 
-    key: ${{secrets.KEY}}                                        # Remote server private key - REQUIRED at least one of "password" or "key" 
-    pre_upload: echo "This will be executed before the upload!"  # Command to run via ssh before scp upload - REQUIRED false
-    post_upload: echo "This will be executed after the upload!"  # Command to run via ssh after scp upload - REQUIRED false
-    ssh_options: -o StrictHostKeyChecking=no                     # A set of ssh_option separated by -o - REQUIRED false - DEFAULT -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null
-    scp_options: -v                                              # Flags to use during scp - REQUIRED false - DEFAULT ''
+on: push
+name: 🚀 Deploy website on push
+jobs:
+  web-deploy:
+    name: 🎉 Deploy
+    runs-on: ubuntu-latest
+    steps:
+    - name: 🚚 Get latest code
+      uses: actions/checkout@v2
+    
+    - name: 📂 Sync files
+      uses: SamKirkland/FTP-Deploy-Action@4.3.0
+      with:
+        server: ftp.phx.nearlyfreespeech.net
+        username: bukes_scottbuchanan
+        password: ${{ secrets.ftp_password }}
